@@ -1,0 +1,37 @@
+﻿@page "/LogReg"
+
+<PageTitle>Login and Registration</PageTitle>
+
+<div class="purpleBody">
+    <div class="main">
+        <input type="checkbox" id="chk" checked aria-hidden="true">
+
+        <div class="signup">
+            <form>
+                <label for="chk" aria-hidden="true">Գրանցում</label>
+                <input type="text" name="txt" placeholder="User name" required="">
+                <input type="email" name="email" placeholder="Email" required="">
+                <input type="password" name="pswd" placeholder="Password" required="">
+                <input type="text" name="pasOrID" placeholder="Անձնագիր կամ Նույնակ․ քարտ" required="">
+                <input type="number" name="soc" placeholder="Սոց քարտ" required="">
+                <input type="number" name="hvhh" placeholder="ՀՎՀՀ" required="">
+
+
+                <button>Գրանցվել</button>
+            </form>
+        </div>
+
+        <div class="login">
+            <form>
+                <label for="chk" aria-hidden="true">Մուտք</label>
+                <input type="email" name="email" placeholder="Email" required="">
+                <input type="password" name="pswd" placeholder="Password" required="">
+                <button>Մուտք գործել</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
