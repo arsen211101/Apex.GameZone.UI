@@ -1,6 +1,7 @@
 ﻿using Apex.GameZone.UI.Models.Auth;
 using Apex.GameZone.UI.Services.CommonServices;
-using System.Configuration;
+using Apex.GameZone.UI.Services.GamezoneServices;
+using Apex.GameZone.UI.Services.SectionServices;
 
 namespace Apex.GameZone.UI.ServiceExtensions.RegisterExtension
 {
@@ -11,6 +12,8 @@ namespace Apex.GameZone.UI.ServiceExtensions.RegisterExtension
             services.AddHttpClient();
             services.AddScoped<TokenModel>();
             services.AddScoped<ICommonService, CommonService>();
+            services.AddScoped<IGamezoneService, GamezoneService>();
+            services.AddScoped<ISectionService, SectionService>();
         }
     }
 }

@@ -1,5 +1,26 @@
-﻿<h3>Gamezone</h3>
+﻿@page "/gamezone"
+@using Apex.GameZone.UI.Models;
+@using Apex.GameZone.UI.Services.GamezoneServices;
+@inject IGamezoneService _gameZoneService
+
+@if (!gameZones.Any())
+{
+    <p>There arn't any gamezones please create it.! '</p>
+}
+else
+{
+    foreach (var item in gameZones)
+    {
+        <p>@item.Name</p>
+        <p>@item.Products</p>
+        <p>@item.Phone</p>
+    }
+}
 
 @code {
-
+    List<GameZoneModel> gameZones = new List<GameZoneModel>();
+    protected async override Task OnInitializedAsync()
+    {
+        gameZones = await _gameZoneService.GetAllGameZones();
+    }
 }

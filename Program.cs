@@ -1,8 +1,10 @@
+using Apex.GameZone.UI.ServiceExtensions.RegisterExtension;
 using Apex.GameZone.UI.Services.CommonServices;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.RegisterServices();
 
 var configuration = builder.Configuration;
 
