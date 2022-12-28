@@ -1,26 +1,27 @@
 ﻿@page "/gamezone"
+
 @using Apex.GameZone.UI.Models;
 @using Apex.GameZone.UI.Services.GamezoneServices;
-@inject IGamezoneService _gameZoneService
 
-@if (!gameZones.Any())
+@inject IGamezoneService _gameZoneService
+@inject NavigationManager _navManager
+
+
+<RadzenButton Click=@OnClick Text="Ստեղծել" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small" />
+
+@foreach (var item in gameZones)
 {
-    <p>There arn't any gamezones please create it.! '</p>
-}
-else
-{
-    foreach (var item in gameZones)
-    {
-        <p>@item.Name</p>
-        <p>@item.Products</p>
-        <p>@item.Phone</p>
-    }
+    <RadzenImage Path="/images/gamezoneLogo.png" Style="width: 60%; margin: 3rem;" />
+    <p>@item.Name</p>
 }
 
 @code {
     List<GameZoneModel> gameZones = new List<GameZoneModel>();
+
     protected async override Task OnInitializedAsync()
     {
         gameZones = await _gameZoneService.GetAllGameZones();
     }
+
+    void OnClick() => _navManager.NavigateTo("/createGameZone");
 }

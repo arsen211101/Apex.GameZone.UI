@@ -1,28 +1,22 @@
 {
-  "iisSettings": {
-    "iisExpress": {
-      "applicationUrl": "http://localhost:25459/LogReg",
-      "sslPort": 44356
-    }
-  },
   "profiles": {
     "http": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5111",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5111"
     },
     "https": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7260;http://localhost:5111",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7260;http://localhost:5111"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -30,6 +24,12 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
+  },
+  "iisSettings": {
+    "iisExpress": {
+      "applicationUrl": "http://localhost:25459",
+      "sslPort": 44356
     }
   }
 }
