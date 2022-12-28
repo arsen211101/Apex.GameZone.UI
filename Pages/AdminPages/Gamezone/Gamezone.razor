@@ -99,9 +99,7 @@
             </Template>
             <EditTemplate Context="section">
                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(section))"></RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(section))"></RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(section))"></RadzenButton>
-            </EditTemplate>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(section))"></RadzenButton>            </EditTemplate>
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
@@ -130,17 +128,17 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="GrossPrice" Title="Price">
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="ActualPrice" Title="ActualPrice">
             <EditTemplate Context="product">
-                <RadzenNumeric @bind-Value="product.GrossPrice" Style="width:100%; display: block" Name="GrossPrice" />
-                <RadzenRequiredValidator Text="Gross Price is required" Component="GrossPrice" Popup="true" />
+                <RadzenNumeric @bind-Value="product.ActualPrice" Style="width:100%; display: block" Name="ActualPrice" />
+                <RadzenRequiredValidator Text="Actual Price is required" Component="ActualPrice" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Balance" Title="Balance">
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Quantity" Title="Quantity">
             <EditTemplate Context="product">
-                <RadzenNumeric @bind-Value="product.Balance" Style="width:100%; display: block" Name="GroBalancessPrice" />
-                <RadzenRequiredValidator Text="Balance is required" Component="Balance" Popup="true" />
+                <RadzenNumeric @bind-Value="product.Quantity" Style="width:100%; display: block" Name="Quantity" />
+                <RadzenRequiredValidator Text="Quantity is required" Component="Quantity" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -153,7 +151,6 @@
             <EditTemplate Context="product">
                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveProductRow(product))"></RadzenButton>
                 <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelProductEdit(product))"></RadzenButton>
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteProductRow(product))"></RadzenButton>
             </EditTemplate>
         </RadzenDataGridColumn>
     </Columns>
@@ -345,8 +342,8 @@
 
     async Task InsertProductRow()
     {
-        sectionsToInsert = new SectionModel();
-        await sectionsGrid.InsertRow(sectionsToInsert);
+        productsToInsert = new ProductModel();
+        await productsGrid.InsertRow(productsToInsert);
     }
 
     void OnCreateRow(SectionModel section)

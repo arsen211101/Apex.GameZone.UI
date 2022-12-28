@@ -22,7 +22,7 @@ namespace Apex.GameZone.UI.Services.ProductServices
         /// Create Product
         /// </summary>
         /// <returns> Created Product </returns>
-        Task<ProductModel> CreateProduct(ProductModel productModel);
+        Task<int> CreateProduct(ProductModel productModel);
 
         /// <summary>
         ///  Update Product 

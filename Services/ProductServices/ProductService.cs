@@ -23,22 +23,22 @@ namespace Apex.GameZone.UI.Services.ProductServices
             return await _commonService.HttpRequest<string, ProductModel>(HttpMethod.Get, "", requestUrl, null);
         }
 
-        public async Task<ProductModel> CreateProduct(ProductModel model)
+        public async Task<int> CreateProduct(ProductModel model)
         {
             var requestUrl = $"product";
-            return await _commonService.HttpRequest<ProductModel, ProductModel>(HttpMethod.Post, "", requestUrl, model);
+            return await _commonService.HttpRequest<ProductModel, int>(HttpMethod.Post, "", requestUrl, model);
         }
 
         public async Task UpdateProduct(ProductModel model)
         {
             var requestUrl = $"product";
-            await _commonService.HttpRequest<ProductModel, string>(HttpMethod.Put, "", requestUrl, model);
+            await _commonService.HttpRequest<ProductModel, ProductModel>(HttpMethod.Put, "", requestUrl, model);
         }
 
         public async Task DeleteProduct(ProductModel model)
         {
             var requestUrl = $"product";
-            await _commonService.HttpRequest<ProductModel, int>(HttpMethod.Delete, "", requestUrl, model);
+            await _commonService.HttpRequest<ProductModel, ProductModel>(HttpMethod.Delete, "", requestUrl, model);
         }
     }
 }
