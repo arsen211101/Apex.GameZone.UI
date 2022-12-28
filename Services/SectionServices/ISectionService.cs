@@ -16,5 +16,26 @@ namespace Apex.GameZone.UI.Services.SectionServices
         /// </summary>
         /// <returns> List of Sections </returns>
         Task<List<SectionModel>> GetAllSections();
+
+        /// <summary>
+        /// Save Section functionality
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Record count</returns>
+        Task<int> SaveSection(SectionModel model);
+
+        /// <summary>
+        /// Update Section
+        /// </summary>
+        /// <param name="model">model</param>
+        /// <returns>Updated sections count</returns>
+        Task UpdateSection(SectionModel model);
+
+        /// <summary>
+        /// Delete Section
+        /// </summary>
+        /// <param name="model">SectionModel for delate</param>
+        /// <returns></returns>
+        Task DeleteSection(SectionModel model);
     }
 }

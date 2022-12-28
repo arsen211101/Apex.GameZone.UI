@@ -22,5 +22,23 @@ namespace Apex.GameZone.UI.Services.SectionServices
             var requestUrl = $"section";
             return await _commonService.HttpRequest<string, List<SectionModel>>(HttpMethod.Get, "", requestUrl, null);
         }
+
+        public async Task<int> SaveSection(SectionModel model)
+        {
+            var requestUrl = $"section";
+            return await _commonService.HttpRequest<SectionModel, int>(HttpMethod.Post, "", requestUrl, model);
+        }
+
+        public async Task UpdateSection(SectionModel model)
+        {
+            var requestUrl = $"section";
+            await _commonService.HttpRequest<SectionModel, string>(HttpMethod.Put, "", requestUrl, model);
+        }
+
+        public async Task DeleteSection(SectionModel model)
+        {
+            var requestUrl = $"section";
+            await _commonService.HttpRequest<SectionModel, int>(HttpMethod.Delete, "", requestUrl, model);
+        }
     }
 }

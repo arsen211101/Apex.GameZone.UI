@@ -1,19 +1,361 @@
 ﻿@page "/gamezone/{gameZoneId:int}"
 
+@using Apex.GameZone.UI.Enums;
 @using Apex.GameZone.UI.Models;
 @using Apex.GameZone.UI.Services.GamezoneServices;
+@using Apex.GameZone.UI.Services.ProductServices;
+@using Apex.GameZone.UI.Services.SectionServices;
 
 @inject IGamezoneService _gameZonerservice
+@inject ISectionService _sectionService
+@inject IProductService _productService
 
-<p> @gameZone.Name </p>
+<RadzenTemplateForm TItem="GameZoneModel" Data=@gameZone>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <RadzenFieldset Text="GameZone Info">
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Disabled Name="Name" @bind-Value="gameZone.Name" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Address" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Disabled Name="Address" @bind-Value=@gameZone.Address />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Email" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Disabled Name="Email" @bind-Value=@gameZone.Email />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Phone Number" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox Disabled Name="Phone" @bind-Value="gameZone.Phone" />
+                        </div>
+                    </div>
+                </RadzenFieldset>
+            </div>
+        </div>
+    </div>
+</RadzenTemplateForm>
+
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Section" Click="@InsertRow" Disabled=@(sectionsToInsert != null || sectionsToUpdate != null) />
+<RadzenDataGrid @ref="sectionsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@sections" TItem="SectionModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
+    <Columns>
+        <RadzenDataGridColumn TItem="SectionModel" Property="Name" Title="Name">
+            <EditTemplate Context="section">
+                <RadzenTextBox @bind-Value="section.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="Type" Title="Type">
+            <EditTemplate Context="section">
+                <RadzenDropDown @bind-Value="section.Type" Data="@Types" Style="width:100%; display: block" Name="Type" />
+                <RadzenRequiredValidator Text="Type is required" Component="Type" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="Description" Title="Description">
+            <EditTemplate Context="section">
+                <RadzenTextBox @bind-Value="section.Description" Style="width:100%; display: block" Name="Description" />
+                <RadzenRequiredValidator Text="Description is required" Component="Description" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="PricePerHour" Title="PricePerHour">
+            <EditTemplate Context="section">
+                <RadzenNumeric @bind-Value="section.PricePerHour" Style="width:100%; display: block" Name="PricePerHour" />
+                <RadzenRequiredValidator Text="PricePerHour is required" Component="PricePerHour" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="IsVip" Title="Vip">
+            <EditTemplate Context="section">
+                <RadzenCheckBox @bind-Value="section.IsVip" Name="IsVip" TValue="bool" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Context="section" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="section">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(section))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(section))" @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="section">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(section))"></RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(section))"></RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(section))"></RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Product" Click="@InsertProductRow" Disabled=@(productsToInsert != null || productsToUpdate != null) />
+<RadzenDataGrid @ref="productsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@products" TItem="ProductModel" RowUpdate="@OnUpdateProductRow" RowCreate="@OnCreateProductRow" Sort="@ResetProducts" Page="@ResetProducts" Filter="@ResetProducts">
+    <Columns>
+        <RadzenDataGridColumn TItem="ProductModel" Property="Name" Title="Name">
+            <EditTemplate Context="product">
+                <RadzenTextBox @bind-Value="product.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Description" Title="Description">
+            <EditTemplate Context="product">
+                <RadzenTextBox @bind-Value="product.Description" Style="width:100%; display: block" Name="Description" />
+                <RadzenRequiredValidator Text="Product Description is required" Component="Description" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Price" Title="Price">
+            <EditTemplate Context="product">
+                <RadzenNumeric @bind-Value="product.Price" Style="width:100%; display: block" Name="Price" />
+                <RadzenRequiredValidator Text="Price is required" Component="Price" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="GrossPrice" Title="Price">
+            <EditTemplate Context="product">
+                <RadzenNumeric @bind-Value="product.GrossPrice" Style="width:100%; display: block" Name="GrossPrice" />
+                <RadzenRequiredValidator Text="Gross Price is required" Component="GrossPrice" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Balance" Title="Balance">
+            <EditTemplate Context="product">
+                <RadzenNumeric @bind-Value="product.Balance" Style="width:100%; display: block" Name="GroBalancessPrice" />
+                <RadzenRequiredValidator Text="Balance is required" Component="Balance" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductModel" Context="product" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="product">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditProductRow(product))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteProductRow(product))" @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="product">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveProductRow(product))"></RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelProductEdit(product))"></RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteProductRow(product))"></RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
 
 @code {
+
     [Parameter]
     public int gameZoneId { get; set; }
 
     public GameZoneModel gameZone = new GameZoneModel();
+
+    //sections
+    RadzenDataGrid<SectionModel> sectionsGrid;
+    IList<SectionModel> sections;
+
+    SectionModel sectionsToInsert;
+    SectionModel sectionsToUpdate;
+
+    IEnumerable<DeviceTypes> Types = Enum.GetValues(typeof(DeviceTypes)).Cast<DeviceTypes>();
+
+    // products
+    RadzenDataGrid<ProductModel> productsGrid;
+    IList<ProductModel> products;
+
+    ProductModel productsToInsert;
+    ProductModel productsToUpdate;
+
     protected async override Task OnInitializedAsync()
     {
         gameZone = await _gameZonerservice.GetGameZoneById(gameZoneId);
+        sections = gameZone.Sections.ToList();
+        products = gameZone.Products.ToList();
+    }
+
+    void Reset()
+    {
+        sectionsToInsert = null;
+        sectionsToUpdate = null;
+    }
+
+    void ResetProducts()
+    {
+        productsToInsert = null;
+        productsToUpdate = null;
+    }
+
+    async Task EditRow(SectionModel section)
+    {
+        sectionsToUpdate = section;
+        await sectionsGrid.EditRow(section);
+    }
+
+    async Task EditProductRow(ProductModel product)
+    {
+        productsToUpdate = product;
+        await productsGrid.EditRow(product);
+    }
+
+    void OnUpdateRow(SectionModel section)
+    {
+        if (section == sectionsToInsert)
+        {
+            sectionsToInsert = null;
+        }
+
+        sectionsToUpdate = null;
+    }
+
+    void OnUpdateProductRow(ProductModel product)
+    {
+        if (product == productsToInsert)
+        {
+            productsToInsert = null;
+        }
+
+        productsToUpdate = null;
+    }
+
+    async Task SaveRow(SectionModel section)
+    {
+        section.GameZoneId = gameZone.Id;
+        if (section.AddedDate != null)
+        {
+            await _sectionService.UpdateSection(section);
+        }
+        else
+        {
+            await _sectionService.SaveSection(section);
+        }
+        await sectionsGrid.UpdateRow(section);
+    }
+
+    async Task SaveProductRow(ProductModel product)
+    {
+        product.GameZoneId = gameZone.Id;
+        if (product.AddedDate != null)
+        {
+            await _productService.UpdateProduct(product);
+        }
+        else
+        {
+            await _productService.CreateProduct(product);
+        }
+        await productsGrid.UpdateRow(product);
+    }
+
+    void CancelEdit(SectionModel section)
+    {
+        if (section == sectionsToInsert)
+        {
+            sectionsToInsert = null;
+        }
+
+        sectionsToUpdate = null;
+
+        sectionsGrid.CancelEditRow(section);
+    }
+
+    void CancelProductEdit(ProductModel product)
+    {
+        if (product == productsToInsert)
+        {
+            productsToInsert = null;
+        }
+
+        productsToUpdate = null;
+
+        productsGrid.CancelEditRow(product);
+    }
+
+    async Task DeleteRow(SectionModel section)
+    {
+        if (section == sectionsToInsert)
+        {
+            sectionsToInsert = null;
+        }
+
+        if (section == sectionsToUpdate)
+        {
+            sectionsToUpdate = null;
+        }
+
+        if (sections.Contains(section))
+        {
+            await _sectionService.DeleteSection(section);
+            sections.Remove(section);
+
+            await sectionsGrid.Reload();
+        }
+        else
+        {
+            sectionsGrid.CancelEditRow(section);
+            await sectionsGrid.Reload();
+        }
+    }
+
+    async Task DeleteProductRow(ProductModel product)
+    {
+        if (product == productsToInsert)
+        {
+            productsToInsert = null;
+        }
+
+        if (product == productsToUpdate)
+        {
+            productsToUpdate = null;
+        }
+
+        if (products.Contains(product))
+        {
+            await _productService.DeleteProduct(product);
+            products.Remove(product);
+
+            await productsGrid.Reload();
+        }
+        else
+        {
+            productsGrid.CancelEditRow(product);
+            await productsGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        sectionsToInsert = new SectionModel();
+        await sectionsGrid.InsertRow(sectionsToInsert);
+    }
+
+    async Task InsertProductRow()
+    {
+        sectionsToInsert = new SectionModel();
+        await sectionsGrid.InsertRow(sectionsToInsert);
+    }
+
+    void OnCreateRow(SectionModel section)
+    {
+
+    }
+
+    void OnCreateProductRow(ProductModel product)
+    {
+
     }
 }
