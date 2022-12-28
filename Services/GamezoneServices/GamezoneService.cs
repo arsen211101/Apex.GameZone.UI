@@ -17,10 +17,16 @@ namespace Apex.GameZone.UI.Services.GamezoneServices
             return await _commonService.HttpRequest<string, List<GameZoneModel>>(HttpMethod.Get, "", requestUrl, null);
         }
 
-        public async Task<GameZoneModel> GetGameZoneById(Guid id)
+        public async Task<GameZoneModel> GetGameZoneById(int id)
         {
             var requestUrl = $"gamezone/{id}";
             return await _commonService.HttpRequest<string, GameZoneModel>(HttpMethod.Get, "", requestUrl, null);
+        }
+
+        public async Task<GameZoneModel> CreateGameZone(GameZoneModel gameZone)
+        {
+            var requestUrl = $"gamezone";
+            return await _commonService.HttpRequest<GameZoneModel, GameZoneModel>(HttpMethod.Post, "", requestUrl, gameZone);
         }
     }
 }
