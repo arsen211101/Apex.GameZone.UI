@@ -5,10 +5,13 @@
 @using Apex.GameZone.UI.Services.GamezoneServices;
 @using Apex.GameZone.UI.Services.ProductServices;
 @using Apex.GameZone.UI.Services.SectionServices;
+@using Apex.GameZone.UI.Services.ItemServices;
+
 
 @inject IGamezoneService _gameZonerservice
 @inject ISectionService _sectionService
 @inject IProductService _productService
+@inject IItemService _itemService
 
 <RadzenTemplateForm TItem="GameZoneModel" Data=@gameZone>
     <div class="container-fluid">
@@ -52,7 +55,6 @@
         </div>
     </div>
 </RadzenTemplateForm>
-
 
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Section" Click="@InsertRow" Disabled=@(sectionsToInsert != null || sectionsToUpdate != null) />
 <RadzenDataGrid @ref="sectionsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@sections" TItem="SectionModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
@@ -99,7 +101,8 @@
             </Template>
             <EditTemplate Context="section">
                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(section))"></RadzenButton>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(section))"></RadzenButton>            </EditTemplate>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelEdit(section))"></RadzenButton>
+            </EditTemplate>
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
@@ -156,6 +159,44 @@
     </Columns>
 </RadzenDataGrid>
 
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Item" Click="@InsertItemRow" Disabled=@(itemsToInsert != null || itemsToUpdate != null) />
+<RadzenDataGrid @ref="itemsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@items" TItem="ItemModel" RowUpdate="@OnUpdateItemRow" RowCreate="@OnCreateItemRow" Sort="@ResetItems" Page="@ResetItems" Filter="@ResetItems">
+    <Columns>
+        <RadzenDataGridColumn TItem="ItemModel" Property="Name" Title="Name">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ItemModel" Filterable="false" Property="Description" Title="Description">
+            <EditTemplate Context="item">
+                <RadzenTextBox @bind-Value="item.Description" Style="width:100%; display: block" Name="Description" />
+                <RadzenRequiredValidator Text="Item Description is required" Component="Description" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ItemModel" Filterable="false" Property="PricePerHour" Title="PricePerHour">
+            <EditTemplate Context="item">
+                <RadzenNumeric @bind-Value="item.PricePerHour" Style="width:100%; display: block" Name="PricePerHour" />
+                <RadzenRequiredValidator Text="Price Per Hour is required" Component="PricePerHour" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ItemModel" Context="item" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="item">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditItemRow(item))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteItemRow(item))" @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="item">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveItemRow(item))"></RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@((args) => CancelItemEdit(item))"></RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
 @code {
 
     [Parameter]
@@ -179,11 +220,19 @@
     ProductModel productsToInsert;
     ProductModel productsToUpdate;
 
+    // items
+    RadzenDataGrid<ItemModel> itemsGrid;
+    IList<ItemModel> items;
+
+    ItemModel itemsToInsert;
+    ItemModel itemsToUpdate;
+
     protected async override Task OnInitializedAsync()
     {
         gameZone = await _gameZonerservice.GetGameZoneById(gameZoneId);
         sections = gameZone.Sections.ToList();
         products = gameZone.Products.ToList();
+        items = gameZone.Items.ToList();
     }
 
     void Reset()
@@ -198,6 +247,12 @@
         productsToUpdate = null;
     }
 
+    void ResetItems()
+    {
+        itemsToInsert = null;
+        itemsToUpdate = null;
+    }
+
     async Task EditRow(SectionModel section)
     {
         sectionsToUpdate = section;
@@ -208,6 +263,12 @@
     {
         productsToUpdate = product;
         await productsGrid.EditRow(product);
+    }
+
+    async Task EditItemRow(ItemModel item)
+    {
+        itemsToUpdate = item;
+        await itemsGrid.EditRow(item);
     }
 
     void OnUpdateRow(SectionModel section)
@@ -230,6 +291,15 @@
         productsToUpdate = null;
     }
 
+    void OnUpdateItemRow(ItemModel item)
+    {
+        if (item == itemsToInsert)
+        {
+            itemsToInsert = null;
+        }
+        itemsToUpdate = null;
+    }
+
     async Task SaveRow(SectionModel section)
     {
         section.GameZoneId = gameZone.Id;
@@ -242,6 +312,7 @@
             await _sectionService.SaveSection(section);
         }
         await sectionsGrid.UpdateRow(section);
+        Reset();
     }
 
     async Task SaveProductRow(ProductModel product)
@@ -256,6 +327,22 @@
             await _productService.CreateProduct(product);
         }
         await productsGrid.UpdateRow(product);
+        ResetProducts();
+    }
+
+    async Task SaveItemRow(ItemModel item)
+    {
+        item.GameZoneId = gameZone.Id;
+        if (item.AddedDate != null)
+        {
+            await _itemService.UpdateItem(item);
+        }
+        else
+        {
+            await _itemService.SaveItem(item);
+        }
+        await itemsGrid.UpdateRow(item);
+        ResetItems();
     }
 
     void CancelEdit(SectionModel section)
@@ -280,6 +367,18 @@
         productsToUpdate = null;
 
         productsGrid.CancelEditRow(product);
+    }
+
+    void CancelItemEdit(ItemModel item)
+    {
+        if (item == itemsToInsert)
+        {
+            itemsToInsert = null;
+        }
+
+        itemsToUpdate = null;
+
+        itemsGrid.CancelEditRow(item);
     }
 
     async Task DeleteRow(SectionModel section)
@@ -334,6 +433,32 @@
         }
     }
 
+    async Task DeleteItemRow(ItemModel item)
+    {
+        if (item == itemsToInsert)
+        {
+            itemsToInsert = null;
+        }
+
+        if (item == itemsToUpdate)
+        {
+            itemsToUpdate = null;
+        }
+
+        if (items.Contains(item))
+        {
+            await _itemService.DeleteItem(item);
+            items.Remove(item);
+
+            await itemsGrid.Reload();
+        }
+        else
+        {
+            itemsGrid.CancelEditRow(item);
+            await itemsGrid.Reload();
+        }
+    }
+
     async Task InsertRow()
     {
         sectionsToInsert = new SectionModel();
@@ -346,12 +471,21 @@
         await productsGrid.InsertRow(productsToInsert);
     }
 
+    async Task InsertItemRow()
+    {
+        itemsToInsert = new ItemModel();
+        await itemsGrid.InsertRow(itemsToInsert);
+    }
+
     void OnCreateRow(SectionModel section)
     {
 
     }
-
     void OnCreateProductRow(ProductModel product)
+    {
+
+    }
+    void OnCreateItemRow(ItemModel product)
     {
 
     }

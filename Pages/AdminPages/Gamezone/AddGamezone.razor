@@ -4,6 +4,7 @@
 @using Apex.GameZone.UI.Services.GamezoneServices;
 
 @inject IGamezoneService _gameZoneService
+@inject NavigationManager _navManager
 
 <RadzenTemplateForm TItem="GameZoneModel" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
     <div class="container-fluid">
@@ -65,15 +66,16 @@
     void OnSubmit()
     {
         _gameZoneService.CreateGameZone(model);
+        _navManager.NavigateTo("/gamezones");
     }
 
     void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
     {
-        //
+      //
     }
 
     void Back()
     {
-        //
+        _navManager.NavigateTo("/gamezones");
     }
 }
