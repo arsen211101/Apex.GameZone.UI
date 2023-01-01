@@ -1,7 +1,5 @@
-﻿namespace Apex.GameZone.UI.Helpers
+﻿namespace Apex.GameZone.UI.Helpers;
+
+public static class Constants
 {
-    public static class Constants
-    {
-      
-    }
 }

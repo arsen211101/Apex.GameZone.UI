@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@using Apex.GameZone.UI.Models.Auth;
+@using Apex.GameZone.UI.Models.Auth
 @layout EmptyLayout
 
 <PageTitle>Login and Registration</PageTitle>
@@ -31,15 +31,14 @@
 </div>
 
 @code {
-    UserModel model = new UserModel() { };
+    readonly UserModel model = new();
 
     void SignIn()
     {
-
     }
 
     void LogIn()
     {
-
     }
+
 }

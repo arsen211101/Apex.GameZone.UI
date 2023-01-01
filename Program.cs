@@ -1,4 +1,5 @@
-using Apex.GameZone.UI.ServiceExtensions.RegisterExtension;
+using Apex.GameZone.UI.Extensions.ServiceExtensions;
+using Apex.GameZone.UI.Services.CommonIdentityServices;
 using Apex.GameZone.UI.Services.CommonServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +15,15 @@ builder.Services.AddHttpClient<ICommonService, CommonService>(c =>
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
+builder.Services.AddHttpClient<ICommonIdentityService, CommonIdentityService>(c =>
+{
+    c.BaseAddress = configuration.GetValue<Uri>("Identity:baseUrl");
+    c.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHsts();
-}
+if (!app.Environment.IsDevelopment()) app.UseHsts();
 
 app.UseHttpsRedirection();
 
