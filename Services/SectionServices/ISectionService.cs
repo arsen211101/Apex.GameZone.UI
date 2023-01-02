@@ -18,6 +18,13 @@ public interface ISectionService
     Task<List<SectionModel>> GetAllSections();
 
     /// <summary>
+    ///    Retrieves Sections from DB based on GameZoneId
+    /// </summary>
+    /// <param name="gameZoneId"></param>
+    /// <returns></returns>
+    Task<List<SectionModel>> GetAllSectionsByGameZoneId(int gameZoneId);
+
+    /// <summary>
     ///     Save Section functionality
     /// </summary>
     /// <param name="model"></param>

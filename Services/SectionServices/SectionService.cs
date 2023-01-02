@@ -24,6 +24,12 @@ public class SectionService : ISectionService
         return await _commonService.HttpRequest<string, List<SectionModel>>(HttpMethod.Get, "", requestUrl, null);
     }
 
+    public async Task<List<SectionModel>> GetAllSectionsByGameZoneId(int gameZoneId)
+    {
+        var requestUrl = $"section/gamezone/{gameZoneId}";
+        return await _commonService.HttpRequest<string, List<SectionModel>>(HttpMethod.Get, "", requestUrl, null);
+    }
+
     public async Task<int> SaveSection(SectionModel model)
     {
         var requestUrl = "section";
