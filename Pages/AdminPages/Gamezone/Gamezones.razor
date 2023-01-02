@@ -8,7 +8,7 @@
 @inject NavigationManager _navManager
 
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New GameZone" Click="@InsertRow" Disabled="@(gamezonesToInsert != null || gamezonesToUpdate != null)" />
-<RadzenDataGrid @ref="gameZonesGrid" RowSelect="NavigateToSections" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@gameZones" TItem="GameZoneModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
+<RadzenDataGrid @ref="gameZonesGrid" AllowColumnResize="true" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@gameZones" TItem="GameZoneModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
     <Columns>
         <RadzenDataGridColumn Width="50px" TItem="GameZoneModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
             <Template Context="data">
@@ -18,44 +18,44 @@
 
         <RadzenDataGridColumn Title="" TItem="GameZoneModel">
             <Template Context="gamezone">
-                <RadzenIcon Icon="extension" IconStyle="IconStyle.Dark"/>
+                <RadzenIcon Icon="extension" IconStyle="IconStyle.Dark" />
             </Template>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="GameZoneModel" Property="Name" Title="Name">
             <EditTemplate Context="gamezone">
-                <RadzenTextBox @bind-Value="gamezone.Name" Style="display: block; width: 100%;" Name="Name"/>
-                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true"/>
+                <RadzenTextBox @bind-Value="gamezone.Name" Style="display: block; width: 100%;" Name="Name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Email" Title="Email">
             <EditTemplate Context="gamezone">
-                <RadzenTextBox Style="display: block; width: 100%;" Name="Email" @bind-Value="gamezone.Email"/>
-                <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup="true" Style="position: absolute"/>
-                <RadzenRequiredValidator Text="Email is required" Component="Type" Popup="true"/>
+                <RadzenTextBox Style="display: block; width: 100%;" Name="Email" @bind-Value="gamezone.Email" />
+                <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup="true" Style="position: absolute" />
+                <RadzenRequiredValidator Text="Email is required" Component="Type" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Address" Title="Address">
             <EditTemplate Context="gamezone">
-                <RadzenTextBox @bind-Value="gamezone.Address" Style="display: block; width: 100%;" Name="Address"/>
-                <RadzenRequiredValidator Text="Address is required" Component="Address" Popup="true"/>
+                <RadzenTextBox @bind-Value="gamezone.Address" Style="display: block; width: 100%;" Name="Address" />
+                <RadzenRequiredValidator Text="Address is required" Component="Address" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Phone" Title="Phone">
             <EditTemplate Context="gamezone">
-                <RadzenMask Mask="(***) ** **-**-**" CharacterPattern="[0-9]" Placeholder="(374) 00 00-00-00" Name="Phone" @bind-Value=@gamezone.Phone Style="width: 100%;"/>
-                <RadzenRequiredValidator Text="Phone is required" Component="Phone" Popup="true"/>
+                <RadzenMask Mask="(***) ** **-**-**" CharacterPattern="[0-9]" Placeholder="(374) 00 00-00-00" Name="Phone" @bind-Value=@gamezone.Phone Style="width: 100%;" />
+                <RadzenRequiredValidator Text="Phone is required" Component="Phone" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="GameZoneModel" Context="gamezone" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
             <Template Context="gamezone">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(gamezone))" @onclick:stopPropagation="true">
-                </RadzenButton>
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(gamezone))" @onclick:stopPropagation="true"></RadzenButton>
                 <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(gamezone))" @onclick:stopPropagation="true"></RadzenButton>
+                <RadzenButton Icon="visibility" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => NavigateToSections(gamezone.Id))"></RadzenButton>
             </Template>
             <EditTemplate Context="gamezone">
                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(gamezone))"></RadzenButton>
@@ -78,9 +78,9 @@
         gameZones = await _gameZoneService.GetAllGameZones();
     }
 
-    void NavigateToSections(GameZoneModel args)
+    void NavigateToSections(int args)
     {
-        _navManager.NavigateTo($"/gamezone/{args.Id}");
+        _navManager.NavigateTo($"/gamezone/{args}");
     }
 
     void Reset()
