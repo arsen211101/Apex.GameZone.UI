@@ -30,4 +30,15 @@ public class GamezoneService : IGamezoneService
         return await _commonService.HttpRequest<GameZoneModel, GameZoneModel>(HttpMethod.Post, "", requestUrl,
             gameZone);
     }
+    public async Task UpdateGamezone(GameZoneModel model)
+    {
+        var requestUrl = "gamezone";
+        await _commonService.HttpRequest<GameZoneModel, string>(HttpMethod.Put, "", requestUrl, model);
+    }
+
+    public async Task DeleteGameZone(GameZoneModel model)
+    {
+        var requestUrl = "gamezone";
+        await _commonService.HttpRequest<GameZoneModel, int>(HttpMethod.Delete, "", requestUrl, model);
+    }
 }

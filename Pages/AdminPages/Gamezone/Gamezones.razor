@@ -1,42 +1,169 @@
 ﻿@page "/gamezones"
 @page "/"
+
 @using Apex.GameZone.UI.Services.GamezoneServices
 @using Apex.GameZone.UI.Models
 
 @inject IGamezoneService _gameZoneService
 @inject NavigationManager _navManager
 
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New GameZone" Click="@InsertRow" Disabled="@(gamezonesToInsert != null || gamezonesToUpdate != null)" />
+<RadzenDataGrid @ref="gameZonesGrid" RowSelect="NavigateToSections" AllowAlternatingRows="false" AllowFiltering="false" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@gameZones" TItem="GameZoneModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
+    <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="GameZoneModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(gameZones.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
 
-<RadzenButton Click="@OnClick" Text="Ստեղծել" Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"/>
+        <RadzenDataGridColumn Title="" TItem="GameZoneModel">
+            <Template Context="gamezone">
+                <RadzenIcon Icon="extension" IconStyle="IconStyle.Dark"/>
+            </Template>
+        </RadzenDataGridColumn>
 
-<div class="container-fluid">
-    <div class="row">
-        @foreach (var item in gameZones)
-        {
-            <div class="col-xl-6">
-                <h3 class="mt-3 align-content-center">@item.Name</h3>
-                <RadzenImage Path="/images/gamezoneLogo.png" Click=@(args => OpenGamezone(item.Id)) alt="gameZoneImage" Style="width: 20%;"/>
-            </div>
-        }
-    </div>
-</div>
+        <RadzenDataGridColumn TItem="GameZoneModel" Property="Name" Title="Name">
+            <EditTemplate Context="gamezone">
+                <RadzenTextBox @bind-Value="gamezone.Name" Style="display: block; width: 100%;" Name="Name"/>
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Email" Title="Email">
+            <EditTemplate Context="gamezone">
+                <RadzenTextBox Style="display: block; width: 100%;" Name="Email" @bind-Value="gamezone.Email"/>
+                <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup="true" Style="position: absolute"/>
+                <RadzenRequiredValidator Text="Email is required" Component="Type" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Address" Title="Address">
+            <EditTemplate Context="gamezone">
+                <RadzenTextBox @bind-Value="gamezone.Address" Style="display: block; width: 100%;" Name="Address"/>
+                <RadzenRequiredValidator Text="Address is required" Component="Address" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="GameZoneModel" Filterable="false" Property="Phone" Title="Phone">
+            <EditTemplate Context="gamezone">
+                <RadzenMask Mask="(***) ** **-**-**" CharacterPattern="[0-9]" Placeholder="(374) 00 00-00-00" Name="Phone" @bind-Value=@gamezone.Phone Style="width: 100%;"/>
+                <RadzenRequiredValidator Text="Phone is required" Component="Phone" Popup="true"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="GameZoneModel" Context="gamezone" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="gamezone">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(gamezone))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteRow(gamezone))" @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="gamezone">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveRow(gamezone))"></RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => CancelEdit(gamezone))"></RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
 
 @code {
-    List<GameZoneModel> gameZones = new();
+    //sections
+    RadzenDataGrid<GameZoneModel> gameZonesGrid;
+    IList<GameZoneModel> gameZones;
+
+    GameZoneModel gamezonesToInsert;
+    GameZoneModel gamezonesToUpdate;
 
     protected override async Task OnInitializedAsync()
     {
         gameZones = await _gameZoneService.GetAllGameZones();
     }
 
-    void OnClick()
+    void NavigateToSections(GameZoneModel args)
     {
-        _navManager.NavigateTo("/createGameZone");
+        _navManager.NavigateTo($"/gamezone/{args.Id}");
     }
 
-    void OpenGamezone(int gameZoneId)
+    void Reset()
     {
-        _navManager.NavigateTo($"/gamezone/{gameZoneId}");
+        gamezonesToInsert = null;
+        gamezonesToUpdate = null;
     }
 
+    async Task EditRow(GameZoneModel gameZone)
+    {
+        gamezonesToUpdate = gameZone;
+        await gameZonesGrid.EditRow(gameZone);
+    }
+
+    void OnUpdateRow(GameZoneModel gameZone)
+    {
+        if (gameZone == gamezonesToInsert)
+        {
+            gamezonesToInsert = null;
+        }
+
+        gamezonesToUpdate = null;
+    }
+
+    async Task SaveRow(GameZoneModel gameZone)
+    {
+        if (gameZone.AddedDate != null)
+        {
+            await _gameZoneService.UpdateGamezone(gameZone);
+        }
+        else
+        {
+            await _gameZoneService.CreateGameZone(gameZone);
+        }
+        await gameZonesGrid.UpdateRow(gameZone);
+        Reset();
+    }
+
+    void CancelEdit(GameZoneModel gameZone)
+    {
+        if (gameZone == gamezonesToInsert)
+        {
+            gamezonesToInsert = null;
+        }
+
+        gamezonesToUpdate = null;
+
+        gameZonesGrid.CancelEditRow(gameZone);
+    }
+
+    async Task DeleteRow(GameZoneModel gameZone)
+    {
+        if (gameZone == gamezonesToInsert)
+        {
+            gamezonesToInsert = null;
+        }
+
+        if (gameZone == gamezonesToUpdate)
+        {
+            gamezonesToUpdate = null;
+        }
+
+        if (gameZones.Contains(gameZone))
+        {
+            await _gameZoneService.DeleteGameZone(gameZone);
+            gameZones.Remove(gameZone);
+
+            await gameZonesGrid.Reload();
+        }
+        else
+        {
+            gameZonesGrid.CancelEditRow(gameZone);
+            await gameZonesGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        gamezonesToInsert = new GameZoneModel();
+        await gameZonesGrid.InsertRow(gamezonesToInsert);
+    }
+
+    void OnCreateRow(GameZoneModel gameZone)
+    {
+    }
 }

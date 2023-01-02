@@ -1,4 +1,5 @@
 ﻿@page "/gamezone/{gameZoneId:int}"
+
 @using Apex.GameZone.UI.Services.GamezoneServices
 @using Apex.GameZone.UI.Services.ItemServices
 @using Apex.GameZone.UI.Services.ProductServices
@@ -106,6 +107,12 @@
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Section" Click="@InsertRow" Disabled="@(sectionsToInsert != null || sectionsToUpdate != null)"/>
 <RadzenDataGrid @ref="sectionsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@sections" TItem="SectionModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
     <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="SectionModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(sections.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="SectionModel" Property="Name" Title="Name">
             <EditTemplate Context="section">
                 <RadzenTextBox @bind-Value="section.Name" Style="display: block; width: 100%;" Name="Name"/>
@@ -157,6 +164,12 @@
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Product" Click="@InsertProductRow" Disabled="@(productsToInsert != null || productsToUpdate != null)"/>
 <RadzenDataGrid @ref="productsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@products" TItem="ProductModel" RowUpdate="@OnUpdateProductRow" RowCreate="@OnCreateProductRow" Sort="@ResetProducts" Page="@ResetProducts" Filter="@ResetProducts">
     <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="ProductModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="product">
+                @(products.IndexOf(product) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="ProductModel" Property="Name" Title="Name">
             <EditTemplate Context="product">
                 <RadzenTextBox @bind-Value="product.Name" Style="display: block; width: 100%;" Name="Name"/>
@@ -209,6 +222,12 @@
 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Item" Click="@InsertItemRow" Disabled="@(itemsToInsert != null || itemsToUpdate != null)"/>
 <RadzenDataGrid @ref="itemsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@items" TItem="ItemModel" RowUpdate="@OnUpdateItemRow" RowCreate="@OnCreateItemRow" Sort="@ResetItems" Page="@ResetItems" Filter="@ResetItems">
     <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="ItemModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="item">
+                @(items.IndexOf(item) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
         <RadzenDataGridColumn TItem="ItemModel" Property="Name" Title="Name">
             <EditTemplate Context="item">
                 <RadzenTextBox @bind-Value="item.Name" Style="display: block; width: 100%;" Name="Name"/>

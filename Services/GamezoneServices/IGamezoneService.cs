@@ -22,4 +22,18 @@ public interface IGamezoneService
     /// </summary>
     /// <returns> Created GameZone </returns>
     Task<GameZoneModel> CreateGameZone(GameZoneModel gameZone);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    Task UpdateGamezone(GameZoneModel model);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task DeleteGameZone(GameZoneModel model);
 }

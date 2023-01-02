@@ -5,36 +5,56 @@
 
 @inject ISectionService _sectionService;
 
-<div class="container-fluid">
-    <div class="row">
-        @foreach (var item in sections)
-        {
-            <div class="col-xl-6">
-                <h3 class="mt-3 align-content-center">@item.Name</h3>
-                @if (item.IsBusy)
+<RadzenDataGrid @ref="sectionsGrid" AllowPaging="true" PageSize="10" AllowSorting="true"
+                Data="@sections" TItem="SectionModel">
+    <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="SectionModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                @(sections.IndexOf(data) + 1)
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Property="IsBusy" Title="Status">
+            <Template Context="section">
+                @if (section.IsBusy)
                 {
-                    <RadzenImage Path="/images/90479-auto-xbox-game-green-theft-grand-grass.png" Click=@(args => OpenSection(item.Id)) alt="gameZoneImage" Style="width: 20%;" />
+                    <RadzenIcon Icon="sports_esports" IconStyle="IconStyle.Success" />
                 }
                 else
                 {
-                    <RadzenImage Path="/images/103-1038039_new-used-games-game-controller.png" Click=@(args => OpenSection(item.Id)) alt="gameZoneImage" Style="width: 20%;" />
+                    <RadzenIcon Icon="videogame_asset_off" IconStyle="IconStyle.Danger" />
                 }
-            </div>
-        }
-    </div>
-</div>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="SectionModel" Property="Name" Title="Name" />
+
+        <RadzenDataGridColumn TItem="SectionModel" Property="Description" Title="Description" />
+
+        <RadzenDataGridColumn TItem="SectionModel" Property="Type" Title="Type" />
+
+        <RadzenDataGridColumn TItem="SectionModel" Property="PricePerHour" Title="PricePerHour" />
+
+        <RadzenDataGridColumn TItem="SectionModel" Title="IsVip" Property="IsVip" />
+
+    </Columns>
+</RadzenDataGrid>
 
 
 @code {
-    List<SectionModel> sections = new List<SectionModel>();
+    RadzenDataGrid<SectionModel> sectionsGrid;
+    IList<SectionModel> sections;
 
     protected override async Task OnInitializedAsync()
     {
         sections = await _sectionService.GetAllSectionsByGameZoneId(4);
     }
 
-    void OpenSection(int id)
+    void NavigateToSections(SectionModel args)
     {
-
+        //_navManager.NavigateTo($"/gamezone/{args.Id}");
     }
+
+
+
 }
