@@ -1,5 +1,87 @@
-﻿<h3>Bill</h3>
+@page "/Bill"
+
+@using Apex.GameZone.UI.Models
+@using Apex.GameZone.UI.Services.SectionServices
+
+@inject ISectionService _sectionService
+
+<RadzenTemplateForm TItem="SectionModel" Data="section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                <RadzenFieldset Text="Section Info" Style="width: 499px; height: 528px">
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Disabled Name="Name" @bind-Value="section.Name" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Description" />
+                        </div>
+                        <div class="col">
+                            <RadzenTextBox style="display: block" Disabled Name="Description" @bind-Value="section.Description" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Price" />
+                        </div>
+                        <div class="col">
+                            <RadzenNumeric style="display: block" Disabled Name="Price" @bind-Value="section.PricePerHour" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="IsVip" />
+                        </div>
+                        <div class="col">
+                            <RadzenCheckBox Disabled Name="IsVip" @bind-Value="section.IsVip" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="IsBusy" />
+                        </div>
+                        <div class="col">
+                            <RadzenCheckBox Disabled Name="IsBusy" @bind-Value="section.IsBusy" />
+                        </div>
+                    </div>
+                </RadzenFieldset>
+            </div>
+            <div class="col-md-5">
+                @if (!section.IsBusy)
+                {
+                    <RadzenButton Style="width: 180px; height: 49px" Text="Start now" Icon="timer"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Text="Fixed Time" Icon="av_timer"></RadzenButton>
+                }
+                else
+                {
+                    <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Text="End"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Icon="restart_alt" Text="Add Time"></RadzenButton>
+
+                    //ToDo Products and Icons
+                    //
+                }
+            </div>
+        </div>
+    </div>
+</RadzenTemplateForm>
+
 
 @code {
+    [Parameter]
+    public int sectionId { get; set; }
+
+    SectionModel section = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        section = await _sectionService.GetSectionById(sectionId);
+    }
 
 }

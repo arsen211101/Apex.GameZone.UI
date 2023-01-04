@@ -7,17 +7,16 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.RegisterServices();
 
-var configuration = builder.Configuration;
 
 builder.Services.AddHttpClient<ICommonService, CommonService>(c =>
 {
-    c.BaseAddress = configuration.GetValue<Uri>("Gateway:baseUrl");
+    c.BaseAddress = builder.Configuration.GetValue<Uri>("Gateway:baseUrl");
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
 builder.Services.AddHttpClient<ICommonIdentityService, CommonIdentityService>(c =>
 {
-    c.BaseAddress = configuration.GetValue<Uri>("Identity:baseUrl");
+    c.BaseAddress = builder.Configuration.GetValue<Uri>("Identity:baseUrl");
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
