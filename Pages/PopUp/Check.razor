@@ -1,0 +1,105 @@
+﻿@page "/Check/{OrderID}"
+@using Apex.GameZone.UI.Models.CheckoutModel
+@using Apex.GameZone.UI.Services.CheckServices
+@using Apex.GameZone.UI.Services.SectionServices
+@using Apex.GameZone.UI.Models
+
+@inject DialogService dialogService
+@inject ICheckService checkService
+@inject ISectionService sectionService
+@inject NavigationManager navManager
+
+<div class="row my-4">
+    <div class="col-md-12">
+        <RadzenText TextStyle="TextStyle.Subtitle1">
+            <b>Check Details : </b> Start Time: @order.Start.ToShortTimeString() End Time: @if (order.End != null)
+            {
+                @order.End.Value.ToShortTimeString()
+            }
+            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:N0}", Bill + " AMD")}") Class="float-end" />
+        </RadzenText>
+
+        <br />
+
+        <RadzenText TextStyle="TextStyle.H5">Product</RadzenText>
+        <RadzenDataGrid AllowFiltering="false" AllowPaging="true" AllowSorting="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        Data="@(order.ConnectedProducts)" TItem="ProductModel" ColumnWidth="200px" Class="mt-3" Density="Density.Compact" AllowAlternatingRows="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="ProductModel" Property="Name" Title="Name" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="Price" Title="Price" />
+                <RadzenDataGridColumn TItem="ProductModel" Property="ActualPrice" Title="ActualPrice" />
+            </Columns>
+        </RadzenDataGrid>
+
+        <br />
+        <RadzenText TextStyle="TextStyle.H5">Items</RadzenText>
+        <RadzenDataGrid AllowFiltering="false" AllowPaging="true" AllowSorting="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        Data="@(order.ConnectedItems)" TItem="ItemModel" ColumnWidth="200px" Class="mt-3" Density="Density.Compact" AllowAlternatingRows="false">
+            <Columns>
+                <RadzenDataGridColumn TItem="ItemModel" Property="Name" Title="Name" />
+                <RadzenDataGridColumn TItem="ItemModel" Property="Description" Title="Description" />
+                <RadzenDataGridColumn TItem="ItemModel" Property="PricePerHour" Title="PricePerHour" />
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-end">
+        <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Variant="Variant.Flat" Click="@Stop" Text="End"></RadzenButton>
+        <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" Text="OK" Style="width: 180px; height: 49px" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int OrderID { get; set; }
+
+    CheckoutModel order = new();
+    SectionModel section = new();
+
+    public int Bill { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        order = await checkService.GetCheckoutById(OrderID);
+        section = await sectionService.GetSectionById(order.SectionId);
+        if (order.Bill == 0)
+        {
+            TimeSpan ts = DateTime.Now - order.Start;
+
+            Bill = Convert.ToInt32(ts.TotalMinutes * section.PricePerHour / 60);
+
+            foreach (var item in order.ConnectedProducts)
+            {
+                Bill += Convert.ToInt32(item.ActualPrice);
+            }
+        }
+    }
+
+
+    async Task Stop()
+    {
+        order.End = DateTime.Now;
+
+        TimeSpan ts = DateTime.Now - order.Start;
+        order.Bill = Convert.ToInt32(ts.TotalMinutes * section.PricePerHour / 60);
+
+        foreach (var item in order.ConnectedProducts)
+        {
+            Bill += Convert.ToInt32(item.ActualPrice);
+        }
+
+        section.IsBusy = false;
+
+        //Set Section Not Busy
+        await sectionService.UpdateSection(section);
+
+        // Update checkout
+        await checkService.UpdateCheckout(order);
+
+        // Open amount Dialog and then refresh
+        navManager.NavigateTo("/sections", true);
+    }
+}

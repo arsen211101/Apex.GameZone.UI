@@ -1,14 +1,21 @@
-@page "/Bill"
+@page "/Bill/{sectionId:int}"
 
 @using Apex.GameZone.UI.Models
+@using Apex.GameZone.UI.Models.CheckoutModel
+@using Apex.GameZone.UI.Pages.PopUp
+@using Apex.GameZone.UI.Services.CheckServices
 @using Apex.GameZone.UI.Services.SectionServices
 
 @inject ISectionService _sectionService
+@inject ICheckService _billService
+@inject NavigationManager _navManager
+@inject DialogService dialogService
+
 
 <RadzenTemplateForm TItem="SectionModel" Data="section">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-7">
                 <RadzenFieldset Text="Section Info" Style="width: 499px; height: 528px">
                     <div class="row mb-5">
                         <div class="col-md-4 align-items-center d-flex">
@@ -56,15 +63,21 @@
             <div class="col-md-5">
                 @if (!section.IsBusy)
                 {
-                    <RadzenButton Style="width: 180px; height: 49px" Text="Start now" Icon="timer"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Click="@Start" Text="Start now" Icon="timer"></RadzenButton>
                     <RadzenButton Style="width: 180px; height: 49px" Text="Fixed Time" Icon="av_timer"></RadzenButton>
                 }
+
                 else
                 {
-                    <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Text="End"></RadzenButton>
-                    <RadzenButton Style="width: 180px; height: 49px" Icon="restart_alt" Text="Add Time"></RadzenButton>
+                    @if (check.ExpectedEnd.HasValue)
+                    {
+                        <RadzenButton Style="width: 180px; height: 49px" Icon="restart_alt" Text="Add Time"></RadzenButton>
 
-                    //ToDo Products and Icons
+                    }
+                    <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@CheckBill" Text="Check Bill"></RadzenButton>
+
+
+                    //ToDo Load Products and Icons
                     //
                 }
             </div>
@@ -72,16 +85,70 @@
     </div>
 </RadzenTemplateForm>
 
-
 @code {
     [Parameter]
     public int sectionId { get; set; }
-
+     
     SectionModel section = new();
+    CheckoutModel check = new();
 
     protected override async Task OnInitializedAsync()
     {
         section = await _sectionService.GetSectionById(sectionId);
+        if (section.IsBusy)
+        {
+            //Get last check
+            check = await _billService.GetCheckoutBySectionId(section.Id);
+        }
     }
 
+    async Task Start()
+     {
+        check.Start = DateTime.Now;
+        check.SectionId = section.Id;
+        check.GameZoneId = section.GameZoneId;
+        section.IsBusy = true;
+
+        //Set Section Busy
+        await _sectionService.UpdateSection(section);
+
+        await _billService.CreateCheckout(check);
+
+        _navManager.NavigateTo("/sections", true);
+    }
+
+    void FixedTime(DateTime startTime, DateTime expectedEndTime)
+    {
+        check.Start = startTime;
+        check.ExpectedEnd = expectedEndTime; // ExpectedTime not EndTime
+
+        check.SectionId = section.Id;
+        check.GameZoneId = section.GameZoneId;
+        section.IsBusy = true;
+
+        //Set Section Busy
+        _sectionService.UpdateSection(section);
+
+        _billService.CreateCheckout(check);
+
+        // Open amount Dialog and then refresh
+        _navManager.NavigateTo("/sections", true);
+    }
+
+    void AddTime(double time)
+    {
+        if (check.ExpectedEnd != null)
+            check.ExpectedEnd.Value.AddHours(time); // ExpectedTime not EndTime
+
+        _billService.UpdateCheckout(check);
+
+        _navManager.NavigateTo("/sections", true);
+    }
+
+    async Task CheckBill()
+    {
+        await dialogService.OpenAsync<Check>($"Order {check.Id}",
+            new Dictionary<string, object>() { { "OrderID", check.Id } },
+            new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
 }

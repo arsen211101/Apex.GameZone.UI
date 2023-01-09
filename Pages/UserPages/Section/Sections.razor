@@ -4,6 +4,7 @@
 @using Apex.GameZone.UI.Services.SectionServices
 
 @inject ISectionService _sectionService;
+@inject NavigationManager navManager;
 
 <RadzenDataGrid @ref="sectionsGrid" AllowPaging="true" PageSize="10" AllowSorting="true"
                 Data="@sections" TItem="SectionModel">
@@ -19,10 +20,11 @@
                 @if (section.IsBusy)
                 {
                     <RadzenIcon Icon="sports_esports" IconStyle="IconStyle.Success" />
+
                 }
                 else
                 {
-                    <RadzenIcon Icon="videogame_asset_off" IconStyle="IconStyle.Danger" />
+                    <RadzenIcon Icon="sports_esports" IconStyle="IconStyle.Danger" />
                 }
             </Template>
         </RadzenDataGridColumn>
@@ -37,24 +39,27 @@
 
         <RadzenDataGridColumn TItem="SectionModel" Title="IsVip" Property="IsVip" />
 
+        <RadzenDataGridColumn TItem="SectionModel" Context="section" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="section">
+                <RadzenButton Icon="visibility" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => NavigateToBilling(section.Id))"></RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
-
 
 @code {
     RadzenDataGrid<SectionModel> sectionsGrid;
     IList<SectionModel> sections;
+
 
     protected override async Task OnInitializedAsync()
     {
         sections = await _sectionService.GetAllSectionsByGameZoneId(4);
     }
 
-    void NavigateToSections(SectionModel args)
+    void NavigateToBilling(int id)
     {
-        //_navManager.NavigateTo($"/gamezone/{args.Id}");
+        navManager.NavigateTo($"/Bill/{id}");
     }
-
-
 
 }
