@@ -33,7 +33,7 @@
             <EditTemplate Context="gamezone">
                 <RadzenTextBox Style="display: block; width: 100%;" Name="Email" @bind-Value="gamezone.Email" />
                 <RadzenEmailValidator Component="Email" Text="Provide a valid email address" Popup="true" Style="position: absolute" />
-                <RadzenRequiredValidator Text="Email is required" Component="Type" Popup="true" />
+                <RadzenRequiredValidator Text="Email is required" Component="Email" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -78,7 +78,7 @@
         gameZones = await _gameZoneService.GetAllGameZones();
     }
 
-    void NavigateToSections(int args)
+    void NavigateToSections(int? args)
     {
         _navManager.NavigateTo($"/gamezone/{args}");
     }
@@ -116,6 +116,7 @@
             await _gameZoneService.CreateGameZone(gameZone);
         }
         await gameZonesGrid.UpdateRow(gameZone);
+
         Reset();
     }
 

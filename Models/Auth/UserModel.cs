@@ -24,5 +24,5 @@ public class UserModel : CommonModel.CommonModel
     [Compare("Password")]
     public string ConfirmPassword { get; set; }
 
-    public int GameZoneId { get; set; }
+    public int? GameZoneId { get; set; }
 }

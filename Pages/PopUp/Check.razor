@@ -90,14 +90,15 @@
         {
             Bill += Convert.ToInt32(item.ActualPrice);
         }
+        // Update checkout
+        await checkService.UpdateCheckout(order);
 
         section.IsBusy = false;
 
         //Set Section Not Busy
         await sectionService.UpdateSection(section);
 
-        // Update checkout
-        await checkService.UpdateCheckout(order);
+
 
         // Open amount Dialog and then refresh
         navManager.NavigateTo("/sections", true);

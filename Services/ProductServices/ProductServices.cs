@@ -39,6 +39,6 @@ public class ProductServices : IProductService
     public async Task DeleteProduct(ProductModel model)
     {
         var requestUrl = "product";
-        await _commonService.HttpRequest<ProductModel, ProductModel>(HttpMethod.Delete, "", requestUrl, model);
+        await _commonService.HttpRequest<ProductModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
 }

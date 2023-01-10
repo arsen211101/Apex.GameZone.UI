@@ -9,7 +9,7 @@ public interface ISectionService
     /// </summary>
     /// <param name="id">Sections Id</param>
     /// <returns>SectionModel for the requested Section</returns>
-    Task<SectionModel> GetSectionById(int id);
+    Task<SectionModel> GetSectionById(int? id);
 
     /// <summary>
     ///     Retrieves Sections from DB

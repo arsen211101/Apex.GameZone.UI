@@ -24,11 +24,10 @@ public class GamezoneService : IGamezoneService
         return await _commonService.HttpRequest<string, GameZoneModel>(HttpMethod.Get, "", requestUrl, null);
     }
 
-    public async Task<GameZoneModel> CreateGameZone(GameZoneModel gameZone)
+    public async Task<int> CreateGameZone(GameZoneModel gameZone)
     {
         var requestUrl = "gamezone";
-        return await _commonService.HttpRequest<GameZoneModel, GameZoneModel>(HttpMethod.Post, "", requestUrl,
-            gameZone);
+        return await _commonService.HttpRequest<GameZoneModel, int>(HttpMethod.Post, "", requestUrl, gameZone);
     }
     public async Task UpdateGamezone(GameZoneModel model)
     {
@@ -39,6 +38,6 @@ public class GamezoneService : IGamezoneService
     public async Task DeleteGameZone(GameZoneModel model)
     {
         var requestUrl = "gamezone";
-        await _commonService.HttpRequest<GameZoneModel, int>(HttpMethod.Delete, "", requestUrl, model);
+        await _commonService.HttpRequest<GameZoneModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
 }

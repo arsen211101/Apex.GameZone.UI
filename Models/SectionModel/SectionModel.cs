@@ -10,5 +10,5 @@ public class SectionModel : CommonModel.CommonModel
     public int PricePerHour { get; set; }
     public bool IsVip { get; set; }
     public bool IsBusy { get; set; }
-    public int GameZoneId { get; set; }
+    public int? GameZoneId { get; set; }
 }

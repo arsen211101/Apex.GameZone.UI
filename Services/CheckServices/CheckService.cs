@@ -18,22 +18,22 @@ public class CheckService : ICheckService
         return await _commonService.HttpRequest<string, List<CheckoutModel>>(HttpMethod.Get, "", requestUrl, null);
     }
 
-    public async Task<CheckoutModel> GetCheckoutById(int id)
+    public async Task<CheckoutModel> GetCheckoutById(int? id)
     {
         var requestUrl = $"checkout/{id}";
         return await _commonService.HttpRequest<string, CheckoutModel>(HttpMethod.Get, "", requestUrl, null);
     }
 
-    public async Task<CheckoutModel> GetCheckoutBySectionId(int sectionId)
+    public async Task<CheckoutModel> GetCheckoutBySectionId(int? sectionId)
     {
         var requestUrl = $"checkout/sectionId/{sectionId}";
         return await _commonService.HttpRequest<string, CheckoutModel>(HttpMethod.Get, "", requestUrl, null);
     }
 
-    public async Task<CheckoutModel> CreateCheckout(CheckoutModel check)
+    public async Task<int> CreateCheckout(CheckoutModel check)
     {
         var requestUrl = "checkout";
-        return await _commonService.HttpRequest<CheckoutModel, CheckoutModel>(HttpMethod.Post, "", requestUrl, check);
+        return await _commonService.HttpRequest<CheckoutModel, int>(HttpMethod.Post, "", requestUrl, check);
     }
 
     public async Task UpdateCheckout(CheckoutModel model)
@@ -45,6 +45,6 @@ public class CheckService : ICheckService
     public async Task DeleteCheckout(CheckoutModel model)
     {
         var requestUrl = "checkout";
-        await _commonService.HttpRequest<CheckoutModel, int>(HttpMethod.Delete, "", requestUrl, model);
+        await _commonService.HttpRequest<CheckoutModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
 }

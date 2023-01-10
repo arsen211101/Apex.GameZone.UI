@@ -12,7 +12,7 @@ public class SectionService : ISectionService
         _commonService = commonService;
     }
 
-    public async Task<SectionModel> GetSectionById(int id)
+    public async Task<SectionModel> GetSectionById(int? id)
     {
         var requestUrl = $"section/{id}";
         return await _commonService.HttpRequest<string, SectionModel>(HttpMethod.Get, "", requestUrl, null);
@@ -45,6 +45,6 @@ public class SectionService : ISectionService
     public async Task DeleteSection(SectionModel model)
     {
         var requestUrl = "section";
-        await _commonService.HttpRequest<SectionModel, int>(HttpMethod.Delete, "", requestUrl, model);
+        await _commonService.HttpRequest<SectionModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
 }

@@ -21,7 +21,7 @@ public interface IGamezoneService
     ///     Create GameZone
     /// </summary>
     /// <returns> Created GameZone </returns>
-    Task<GameZoneModel> CreateGameZone(GameZoneModel gameZone);
+    Task<int> CreateGameZone(GameZoneModel gameZone);
 
     /// <summary>
     /// 

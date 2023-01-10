@@ -57,7 +57,7 @@
         sections = await _sectionService.GetAllSectionsByGameZoneId(4);
     }
 
-    void NavigateToBilling(int id)
+    void NavigateToBilling(int? id)
     {
         navManager.NavigateTo($"/Bill/{id}");
     }

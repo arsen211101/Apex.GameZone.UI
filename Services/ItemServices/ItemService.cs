@@ -39,6 +39,6 @@ public class ItemService : IItemService
     public async Task DeleteItem(ItemModel model)
     {
         var requestUrl = "item";
-        await _commonService.HttpRequest<ItemModel, int>(HttpMethod.Delete, "", requestUrl, model);
+        await _commonService.HttpRequest<ItemModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
 }
