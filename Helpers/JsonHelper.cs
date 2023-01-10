@@ -12,7 +12,6 @@ public static class JsonHelper
         MissingMemberHandling = MissingMemberHandling.Ignore,
         DateFormatHandling = DateFormatHandling.IsoDateFormat,
         DateFormatString = DateTimeFormats.IsoFormat,
-        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
         ContractResolver = new PrivateResolver(),
         ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
     };
