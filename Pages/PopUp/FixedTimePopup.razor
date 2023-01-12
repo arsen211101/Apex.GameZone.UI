@@ -1,0 +1,14 @@
+<RadzenDatePicker Min="DateTime.Now.AddHours(+0.5)" TValue="DateTime?" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" @bind-Value="model"></RadzenDatePicker>
+<RadzenButton @onclick="@OnManageSubscriptionSubmit" Variant="Variant.Outlined">Save</RadzenButton>
+
+@code {
+    [Parameter]
+    public EventCallback SubscriptionStateChanged { get; set; }
+
+    DateTime? model = DateTime.Now;
+
+    async Task OnManageSubscriptionSubmit()
+    {
+        await SubscriptionStateChanged.InvokeAsync(model);
+    }
+}

@@ -51,7 +51,6 @@
     RadzenDataGrid<SectionModel> sectionsGrid;
     IList<SectionModel> sections;
 
-
     protected override async Task OnInitializedAsync()
     {
         sections = await _sectionService.GetAllSectionsByGameZoneId(4);
@@ -61,5 +60,4 @@
     {
         navManager.NavigateTo($"/Bill/{id}");
     }
-
 }

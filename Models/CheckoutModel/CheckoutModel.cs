@@ -9,6 +9,6 @@ public class CheckoutModel : CommonModel.CommonModel
     public DateTime? End { get; set; }
     public int Bill { get; set; }
 
-    public IEnumerable<ItemModel> ConnectedItems { get; set; }
-    public IEnumerable<ProductModel> ConnectedProducts { get; set; }
+    public IEnumerable<ItemCheckoutModel> ConnectedItems { get; set; }
+    public IEnumerable<ProductCheckoutModel> ConnectedProducts { get; set; }
 }

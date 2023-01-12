@@ -12,9 +12,16 @@ public class ProductServices : IProductService
         _commonService = commonService;
     }
 
+
     public async Task<List<ProductModel>> GetAllProducts()
     {
         var requestUrl = "product";
+        return await _commonService.HttpRequest<string, List<ProductModel>>(HttpMethod.Get, "", requestUrl, null);
+    }
+
+    public async Task<List<ProductModel>> GetAllProductsByGameZoneId(int gameZoneId)
+    {
+        var requestUrl = $"product/gameZoneId/{gameZoneId}";
         return await _commonService.HttpRequest<string, List<ProductModel>>(HttpMethod.Get, "", requestUrl, null);
     }
 

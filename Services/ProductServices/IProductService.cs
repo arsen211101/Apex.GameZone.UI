@@ -12,6 +12,13 @@ public interface IProductService
     Task<List<ProductModel>> GetAllProducts();
 
     /// <summary>
+    /// Get Products for specific gamezone
+    /// </summary>
+    /// <param name="gameZoneId">GamezoneId</param>
+    /// <returns>Product List</returns>
+    Task<List<ProductModel>> GetAllProductsByGameZoneId(int gameZoneId);
+
+    /// <summary>
     ///     Retrieves Products from DB
     /// </summary>
     /// <returns> List of Products </returns>

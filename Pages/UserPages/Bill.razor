@@ -64,7 +64,7 @@
                 @if (!section.IsBusy)
                 {
                     <RadzenButton Style="width: 180px; height: 49px" Click="@Start" Text="Start now" Icon="timer"></RadzenButton>
-                    <RadzenButton Style="width: 180px; height: 49px" Text="Fixed Time" Icon="av_timer"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Click="@OpenFixedPopup" Text="Fixed Time" Icon="av_timer"></RadzenButton>
                 }
 
                 else
@@ -75,10 +75,13 @@
 
                     }
                     <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@CheckBill" Text="Check Bill"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@AddProduct" Text="Add Product"></RadzenButton>
+                    <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@AddItem" Text="Add Items"></RadzenButton>
 
 
                     //ToDo Load Products and Icons
                     //
+
                 }
             </div>
         </div>
@@ -117,9 +120,19 @@
         _navManager.NavigateTo("/sections", true);
     }
 
-    void FixedTime(DateTime startTime, DateTime expectedEndTime)
+    private EventCallback EndDateHandler => new(this, (Action<DateTime>)(async (DateTime endDate) =>
+    { await FixedTime(endDate); }));
+
+    async Task OpenFixedPopup()
     {
-        check.Start = startTime;
+        var retval = await dialogService.OpenAsync<FixedTimePopup>($"Add Fixed Time",
+            new Dictionary<string, object>() { { "SubscriptionStateChanged", EndDateHandler } },
+            new DialogOptions() { Width = "600px", Height = "auto" });
+    }
+
+    async Task FixedTime(DateTime expectedEndTime)
+    {
+        check.Start = DateTime.Now;
         check.ExpectedEnd = expectedEndTime; // ExpectedTime not EndTime
 
         check.SectionId = section.Id;
@@ -150,5 +163,17 @@
         await dialogService.OpenAsync<Check>($"Order {check.Id}",
             new Dictionary<string, object>() { { "OrderID", check.Id } },
             new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
+    }
+
+    async Task AddProduct()
+    {
+        var retval = await dialogService.OpenAsync<FixedTimePopup>($"Add Fixed Time",
+            new Dictionary<string, object>() { { "SubscriptionStateChanged", EndDateHandler } },
+            new DialogOptions() { Width = "600px", Height = "auto" });
+    }
+
+    async Task AddItem()
+    {
+
     }
 }
