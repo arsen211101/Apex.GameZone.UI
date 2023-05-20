@@ -24,6 +24,6 @@
     {
         await base.OnInitializedAsync();
        var productList = await _productService.GetAllProductsByGameZoneId(4);
-       products= productList.Select(x=>x.Id)
+       //products= productList.Select(x=>x.Id)
     }
 }
