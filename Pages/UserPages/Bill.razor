@@ -4,10 +4,11 @@
 @using Apex.GameZone.UI.Models.CheckoutModel
 @using Apex.GameZone.UI.Pages.PopUp
 @using Apex.GameZone.UI.Services.CheckServices
+@using Apex.GameZone.UI.Services.ProductServices;
 @using Apex.GameZone.UI.Services.SectionServices
 @using Microsoft.AspNetCore.Components
 
-
+@inject IProductService _productService
 @inject ISectionService _sectionService
 @inject ICheckService _billService
 @inject NavigationManager _navManager
@@ -170,32 +171,21 @@
             new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true });
     }
 
-    private EventCallback<DateTime> ProductHandler => EventCallback.Factory.Create<DateTime>(this, async (endDate) =>
+    private EventCallback<ProductCheckoutModel> ProductHandler => EventCallback.Factory.Create<ProductCheckoutModel>(this, async (product) =>
     {
-        await AddProduct(endDate);
+        await AddProduct(product);
     });
 
     async Task AddProductPopUp()
     {
-        var retval = await dialogService.OpenAsync<FixedTimePopup>($"Add Product",
+        var retval = await dialogService.OpenAsync<ProductPopup>($"Add Product",
             new Dictionary<string, object>() { { "SubscriptionStateChanged", ProductHandler } },
             new DialogOptions() { Width = "600px", Height = "auto" });
     }
 
-    async Task AddProduct(DateTime expectedEndTime)
+    async Task AddProduct(ProductCheckoutModel ProductCheckout)
     {
-        
-        check.Start = DateTime.Now;
-        check.ExpectedEnd = expectedEndTime; // ExpectedTime not EndTime
-
-        check.SectionId = section.Id;
-        check.GameZoneId = section.GameZoneId;
-        section.IsBusy = true;
-
-        //Set Section Busy
-        await _sectionService.UpdateSection(section);
-
-        await _billService.CreateCheckout(check);
+       // _productService.
 
         // Open amount Dialog and then refresh
         _navManager.NavigateTo("/sections", true);
