@@ -1,6 +1,7 @@
-@using Microsoft.AspNetCore.Components
+﻿@using Microsoft.AspNetCore.Components
 
 <RadzenDatePicker TValue="DateTime" ShowTime="true" TimeOnly="true" DateFormat="HH:mm" @bind-Value="model"></RadzenDatePicker>
+
 <RadzenButton Click=@(args => OnManageSubscriptionSubmit()) Variant="Variant.Outlined">Save</RadzenButton>
 
 @code {

@@ -8,103 +8,93 @@
 @using Apex.GameZone.UI.Models.Auth
 @using Apex.GameZone.UI.Enums
 
-
-@inject IGamezoneService _gameZonerservice
+@inject IGamezoneService _gameZoneservice
 @inject ISectionService _sectionService
 @inject IProductService _productService
 @inject IItemService _itemService
 
-<RadzenTemplateForm TItem="GameZoneModel" Data="@gameZone">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-5">
-                <RadzenFieldset Text="GameZone Info">
-                    <div class="row mb-5">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Name"/>
-                        </div>
-                        <div class="col">
-                            <RadzenTextBox style="display: block" Disabled Name="Name" @bind-Value="gameZone.Name"/>
-                        </div>
-                    </div>
-                    <div class="row mb-5">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Address"/>
-                        </div>
-                        <div class="col">
-                            <RadzenTextBox style="display: block" Disabled Name="Address" @bind-Value="@gameZone.Address"/>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <fieldset>
+                <legend>GameZone Info</legend>
+                <div class="row">
+                    <div class="form-group col-sm-3">
+                        <label for="Name" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-10">
+                            <input id="Name" class="form-control" disabled value="@gameZone.Name" />
                         </div>
                     </div>
-                    <div class="row mb-5">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Email"/>
-                        </div>
-                        <div class="col">
-                            <RadzenTextBox style="display: block" Disabled Name="Email" @bind-Value="@gameZone.Email"/>
+                    <div class="form-group col-sm-3">
+                        <label for="Address" class="col-md-2 col-form-label">Address</label>
+                        <div class="col-md-10">
+                            <input id="Address" class="form-control" disabled value="@gameZone.Address" />
                         </div>
                     </div>
-                    <div class="row mb-5">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Phone Number"/>
-                        </div>
-                        <div class="col">
-                            <RadzenTextBox Disabled Name="Phone" @bind-Value="gameZone.Phone"/>
+                    <div class="form-group col-sm-3">
+                        <label for="Email" class="col-md-2 col-form-label">Email</label>
+                        <div class="col-md-10">
+                            <input id="Email" class="form-control" disabled value="@gameZone.Email" />
                         </div>
                     </div>
-                </RadzenFieldset>
-            </div>
-
-            <div class="col-md-5">
-                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New User" Click="@InsertUserRow" Disabled="@(usersToInsert != null || usersToUpdate != null)"/>
-                <RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@users" TItem="UserModel" RowUpdate="@OnUpdateUserRow" RowCreate="@OnCreateUserRow" Sort="@ResetUsers" Page="@ResetUsers" Filter="@ResetUsers">
-                    <Columns>
-                        <RadzenDataGridColumn TItem="UserModel" Property="Username" Title="Username">
-                            <EditTemplate Context="user">
-                                <RadzenTextBox @bind-Value="user.Username" Style="display: block; width: 100%;" Name="Username"/>
-                                <RadzenRequiredValidator Text="Username is required" Component="Username" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-
-                        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="Email" Title="Email">
-                            <EditTemplate Context="user">
-                                <RadzenTextBox @bind-Value="user.Email" Style="display: block; width: 100%;" Name="Email"/>
-                                <RadzenRequiredValidator Text="Email is required" Component="Email" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-
-                        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="Password" Title="Password">
-                            <EditTemplate Context="user">
-                                <RadzenTextBox @bind-Value="user.Password" Style="display: block; width: 100%;" Name="Password"/>
-                                <RadzenRequiredValidator Text="Password is required" Component="Password" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-
-                        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="ConfirmPassword" Title="ConfirmPassword">
-                            <EditTemplate Context="user">
-                                <RadzenTextBox @bind-Value="user.ConfirmPassword" Style="display: block; width: 100%;" Name="ConfirmPassword"/>
-                                <RadzenRequiredValidator Text="ConfirmPassword is required" Component="ConfirmPassword" Popup="true"/>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-
-                        <RadzenDataGridColumn TItem="UserModel" Context="user" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
-                            <Template Context="user">
-                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditUserRow(user))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteUserRow(user))" @onclick:stopPropagation="true"></RadzenButton>
-                            </Template>
-                            <EditTemplate Context="user">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveUserRow(user))"></RadzenButton>
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => CancelUserEdit(user))"></RadzenButton>
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>
-            </div>
+                    <div class="form-group col-sm-3">
+                        <label for="Phone" class="col-md-8 col-form-label">Phone Number</label>
+                        <div class="col-md-10">
+                            <input id="Phone" class="form-control" disabled value="@gameZone.Phone" />
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
         </div>
     </div>
-</RadzenTemplateForm>
+</div>
 
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Section" Click="@InsertRow" Disabled="@(sectionsToInsert != null || sectionsToUpdate != null)"/>
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New User" Click="@InsertUserRow" Disabled="@(usersToInsert != null || usersToUpdate != null)" />
+<RadzenDataGrid @ref="usersGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@users" TItem="UserModel" RowUpdate="@OnUpdateUserRow" RowCreate="@OnCreateUserRow" Sort="@ResetUsers" Page="@ResetUsers" Filter="@ResetUsers">
+    <Columns>
+        <RadzenDataGridColumn TItem="UserModel" Property="Username" Title="Username">
+            <EditTemplate Context="user">
+                <RadzenTextBox @bind-Value="user.Username" Style="display: block; width: 100%;" Name="Username" />
+                <RadzenRequiredValidator Text="Username is required" Component="Username" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="Email" Title="Email">
+            <EditTemplate Context="user">
+                <RadzenTextBox @bind-Value="user.Email" Style="display: block; width: 100%;" Name="Email" />
+                <RadzenRequiredValidator Text="Email is required" Component="Email" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="Password" Title="Password">
+            <EditTemplate Context="user">
+                <RadzenTextBox @bind-Value="user.Password" Style="display: block; width: 100%;" Name="Password" />
+                <RadzenRequiredValidator Text="Password is required" Component="Password" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="UserModel" Filterable="false" Property="ConfirmPassword" Title="ConfirmPassword">
+            <EditTemplate Context="user">
+                <RadzenTextBox @bind-Value="user.ConfirmPassword" Style="display: block; width: 100%;" Name="ConfirmPassword" />
+                <RadzenRequiredValidator Text="ConfirmPassword is required" Component="ConfirmPassword" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="UserModel" Context="user" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+            <Template Context="user">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditUserRow(user))" @onclick:stopPropagation="true">
+                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => DeleteUserRow(user))" @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="user">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => SaveUserRow(user))"></RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Class="my-1 ms-1" Click="@(args => CancelUserEdit(user))"></RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Section" Click="@InsertRow" Disabled="@(sectionsToInsert != null || sectionsToUpdate != null)" />
 <RadzenDataGrid @ref="sectionsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@sections" TItem="SectionModel" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset">
     <Columns>
         <RadzenDataGridColumn Width="50px" TItem="SectionModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
@@ -115,35 +105,35 @@
 
         <RadzenDataGridColumn TItem="SectionModel" Property="Name" Title="Name">
             <EditTemplate Context="section">
-                <RadzenTextBox @bind-Value="section.Name" Style="display: block; width: 100%;" Name="Name"/>
-                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true"/>
+                <RadzenTextBox @bind-Value="section.Name" Style="display: block; width: 100%;" Name="Name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="Type" Title="Type">
             <EditTemplate Context="section">
-                <RadzenDropDown @bind-Value="section.Type" Data="@Types" Style="display: block; width: 100%;" Name="Type"/>
-                <RadzenRequiredValidator Text="Type is required" Component="Type" Popup="true"/>
+                <RadzenDropDown @bind-Value="section.Type" Data="@Types" Style="display: block; width: 100%;" Name="Type" />
+                <RadzenRequiredValidator Text="Type is required" Component="Type" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="Description" Title="Description">
             <EditTemplate Context="section">
-                <RadzenTextBox @bind-Value="section.Description" Style="display: block; width: 100%;" Name="Description"/>
-                <RadzenRequiredValidator Text="Description is required" Component="Description" Popup="true"/>
+                <RadzenTextBox @bind-Value="section.Description" Style="display: block; width: 100%;" Name="Description" />
+                <RadzenRequiredValidator Text="Description is required" Component="Description" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="PricePerHour" Title="PricePerHour">
             <EditTemplate Context="section">
-                <RadzenNumeric @bind-Value="section.PricePerHour" Style="display: block; width: 100%;" Name="PricePerHour"/>
-                <RadzenRequiredValidator Text="PricePerHour is required" Component="PricePerHour" Popup="true"/>
+                <RadzenNumeric @bind-Value="section.PricePerHour" Style="display: block; width: 100%;" Name="PricePerHour" />
+                <RadzenRequiredValidator Text="PricePerHour is required" Component="PricePerHour" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="SectionModel" Filterable="false" Property="IsVip" Title="Vip">
             <EditTemplate Context="section">
-                <RadzenCheckBox @bind-Value="section.IsVip" Name="IsVip" TValue="bool"/>
+                <RadzenCheckBox @bind-Value="section.IsVip" Name="IsVip" TValue="bool" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -161,7 +151,7 @@
     </Columns>
 </RadzenDataGrid>
 
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Product" Click="@InsertProductRow" Disabled="@(productsToInsert != null || productsToUpdate != null)"/>
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Product" Click="@InsertProductRow" Disabled="@(productsToInsert != null || productsToUpdate != null)" />
 <RadzenDataGrid @ref="productsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@products" TItem="ProductModel" RowUpdate="@OnUpdateProductRow" RowCreate="@OnCreateProductRow" Sort="@ResetProducts" Page="@ResetProducts" Filter="@ResetProducts">
     <Columns>
         <RadzenDataGridColumn Width="50px" TItem="ProductModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
@@ -172,36 +162,36 @@
 
         <RadzenDataGridColumn TItem="ProductModel" Property="Name" Title="Name">
             <EditTemplate Context="product">
-                <RadzenTextBox @bind-Value="product.Name" Style="display: block; width: 100%;" Name="Name"/>
-                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true"/>
+                <RadzenTextBox @bind-Value="product.Name" Style="display: block; width: 100%;" Name="Name" />
+                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Description" Title="Description">
             <EditTemplate Context="product">
-                <RadzenTextBox @bind-Value="product.Description" Style="display: block; width: 100%;" Name="Description"/>
-                <RadzenRequiredValidator Text="Product Description is required" Component="Description" Popup="true"/>
+                <RadzenTextBox @bind-Value="product.Description" Style="display: block; width: 100%;" Name="Description" />
+                <RadzenRequiredValidator Text="Product Description is required" Component="Description" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Price" Title="Price">
             <EditTemplate Context="product">
-                <RadzenNumeric @bind-Value="product.Price" Style="display: block; width: 100%;" Name="Price"/>
-                <RadzenRequiredValidator Text="Price is required" Component="Price" Popup="true"/>
+                <RadzenNumeric @bind-Value="product.Price" Style="display: block; width: 100%;" Name="Price" />
+                <RadzenRequiredValidator Text="Price is required" Component="Price" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="ActualPrice" Title="ActualPrice">
             <EditTemplate Context="product">
-                <RadzenNumeric @bind-Value="product.ActualPrice" Style="display: block; width: 100%;" Name="ActualPrice"/>
-                <RadzenRequiredValidator Text="Actual Price is required" Component="ActualPrice" Popup="true"/>
+                <RadzenNumeric @bind-Value="product.ActualPrice" Style="display: block; width: 100%;" Name="ActualPrice" />
+                <RadzenRequiredValidator Text="Actual Price is required" Component="ActualPrice" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ProductModel" Filterable="false" Property="Quantity" Title="Quantity">
             <EditTemplate Context="product">
-                <RadzenNumeric @bind-Value="product.Quantity" Style="display: block; width: 100%;" Name="Quantity"/>
-                <RadzenRequiredValidator Text="Quantity is required" Component="Quantity" Popup="true"/>
+                <RadzenNumeric @bind-Value="product.Quantity" Style="display: block; width: 100%;" Name="Quantity" />
+                <RadzenRequiredValidator Text="Quantity is required" Component="Quantity" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -219,7 +209,7 @@
     </Columns>
 </RadzenDataGrid>
 
-<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Item" Click="@InsertItemRow" Disabled="@(itemsToInsert != null || itemsToUpdate != null)"/>
+<RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Class="mt-2 mb-4" Text="Add New Item" Click="@InsertItemRow" Disabled="@(itemsToInsert != null || itemsToUpdate != null)" />
 <RadzenDataGrid @ref="itemsGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="DataGridEditMode.Single" Data="@items" TItem="ItemModel" RowUpdate="@OnUpdateItemRow" RowCreate="@OnCreateItemRow" Sort="@ResetItems" Page="@ResetItems" Filter="@ResetItems">
     <Columns>
         <RadzenDataGridColumn Width="50px" TItem="ItemModel" Title="#" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
@@ -230,22 +220,22 @@
 
         <RadzenDataGridColumn TItem="ItemModel" Property="Name" Title="Name">
             <EditTemplate Context="item">
-                <RadzenTextBox @bind-Value="item.Name" Style="display: block; width: 100%;" Name="Name"/>
-                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true"/>
+                <RadzenTextBox @bind-Value="item.Name" Style="display: block; width: 100%;" Name="Name" />
+                <RadzenRequiredValidator Text="Product Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ItemModel" Filterable="false" Property="Description" Title="Description">
             <EditTemplate Context="item">
-                <RadzenTextBox @bind-Value="item.Description" Style="display: block; width: 100%;" Name="Description"/>
-                <RadzenRequiredValidator Text="Item Description is required" Component="Description" Popup="true"/>
+                <RadzenTextBox @bind-Value="item.Description" Style="display: block; width: 100%;" Name="Description" />
+                <RadzenRequiredValidator Text="Item Description is required" Component="Description" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
         <RadzenDataGridColumn TItem="ItemModel" Filterable="false" Property="PricePerHour" Title="PricePerHour">
             <EditTemplate Context="item">
-                <RadzenNumeric @bind-Value="item.PricePerHour" Style="display: block; width: 100%;" Name="PricePerHour"/>
-                <RadzenRequiredValidator Text="Price Per Hour is required" Component="PricePerHour" Popup="true"/>
+                <RadzenNumeric @bind-Value="item.PricePerHour" Style="display: block; width: 100%;" Name="PricePerHour" />
+                <RadzenRequiredValidator Text="Price Per Hour is required" Component="PricePerHour" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -302,7 +292,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        gameZone = await _gameZonerservice.GetGameZoneById(gameZoneId);
+        gameZone = await _gameZoneservice.GetGameZoneById(gameZoneId);
         sections = gameZone.Sections.ToList();
         products = gameZone.Products.ToList();
         items = gameZone.Items.ToList();
@@ -444,14 +434,14 @@
     async Task SaveUserRow(UserModel user)
     {
         user.GameZoneId = gameZone.Id;
-    //if (user.AddedDate != null)
-    //{
-    //    await _itemService.UpdateItem(user);
-    //}
-    //else
-    //{
-    //    await _itemService.SaveItem(user);
-    //}
+        //if (user.AddedDate != null)
+        //{
+        //    await _itemService.UpdateItem(user);
+        //}
+        //else
+        //{
+        //    await _itemService.SaveItem(user);
+        //}
         await usersGrid.UpdateRow(user);
         ResetItems();
     }
@@ -557,7 +547,7 @@
     }
 
     async Task DeleteItemRow(ItemModel item)
-      {
+    {
         if (item == itemsToInsert)
         {
             itemsToInsert = null;
@@ -597,7 +587,7 @@
 
         if (users.Contains(user))
         {
-    //await _itemService.DeleteItem(user);
+            //await _itemService.DeleteItem(user);
             users.Remove(user);
 
             await usersGrid.Reload();
