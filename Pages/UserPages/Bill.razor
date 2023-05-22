@@ -11,6 +11,9 @@
 @inject IProductService _productService
 @inject ISectionService _sectionService
 @inject ICheckService _billService
+@inject ICheckService _checkService
+
+
 @inject NavigationManager _navManager
 @inject DialogService dialogService
 
@@ -69,7 +72,6 @@
                     <RadzenButton Style="width: 180px; height: 49px" Click="@Start" Text="Start now" Icon="timer"></RadzenButton>
                     <RadzenButton Style="width: 180px; height: 49px" Click="@OpenFixedPopup" Text="Fixed Time" Icon="av_timer"></RadzenButton>
                 }
-
                 else
                 {
                     @if (check.ExpectedEnd.HasValue)
@@ -80,11 +82,6 @@
                     <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@CheckBill" Text="Check Bill"></RadzenButton>
                     <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@AddProductPopUp" Text="Add Product"></RadzenButton>
                     <RadzenButton Style="width: 180px; height: 49px" Icon="alarm_on" Click="@AddItem" Text="Add Items"></RadzenButton>
-
-
-                    //ToDo Load Products and Icons
-                    //
-
                 }
             </div>
         </div>
@@ -125,7 +122,7 @@
 
     private EventCallback<DateTime> EndDateHandler => EventCallback.Factory.Create<DateTime>(this, async (endDate) =>
     {
-         await FixedTime(endDate);
+        await FixedTime(endDate);
     });
 
     async Task OpenFixedPopup()
@@ -185,7 +182,8 @@
 
     async Task AddProduct(ProductCheckoutModel ProductCheckout)
     {
-       // _productService.
+        ProductCheckout.CheckoutId = check.Id.Value;
+        await _checkService.AddProductToCheck(ProductCheckout);
 
         // Open amount Dialog and then refresh
         _navManager.NavigateTo("/sections", true);

@@ -47,4 +47,9 @@ public class CheckService : ICheckService
         var requestUrl = "checkout";
         await _commonService.HttpRequest<CheckoutModel, string>(HttpMethod.Delete, "", requestUrl, model);
     }
+    public async Task<int> AddProductToCheck(ProductCheckoutModel productCheckout)
+    {
+        var requestUrl = "productCheckout";
+        return await _commonService.HttpRequest<ProductCheckoutModel, int>(HttpMethod.Post, "", requestUrl, productCheckout);
+    }
 }

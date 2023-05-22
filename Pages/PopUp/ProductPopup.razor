@@ -5,8 +5,8 @@
 
 @inject IProductService _productService;
 
-<RadzenDropDown @bind-Value=@model.ProductId Data=@products ValueProperty="Name" Style="width: 100%; max-width: 400px;" />
-<RadzenNumeric Min="1" Max="10" @bind-Value=@model.Quantity />
+<RadzenDropDown @bind-Value=@model.ProductId Change="@QuantityCheck" Data=@products TextProperty="Name" ValueProperty="Id" Style="width: 100%; max-width: 400px;" />
+<RadzenNumeric Min="1" Max="@maxQuantity" @bind-Value=@model.Quantity />
 <RadzenButton Click=@(args => OnManageSubscriptionSubmit()) Variant="Variant.Outlined">Save</RadzenButton>
 
 @code {
@@ -14,16 +14,27 @@
     public EventCallback<ProductCheckoutModel> SubscriptionStateChanged { get; set; }
 
     private ProductCheckoutModel model = new();
-    private Dictionary<int,string> products = new();
+    List<ProductModel> products = new();
+
+    int maxQuantity = 1;
+
     private async Task OnManageSubscriptionSubmit()
     {
         await SubscriptionStateChanged.InvokeAsync(model);
     }
 
+    private void QuantityCheck()
+    {
+        maxQuantity = products.FirstOrDefault(x => x.Id == model.ProductId).Quantity;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-       var productList = await _productService.GetAllProductsByGameZoneId(4);
-       //products= productList.Select(x=>x.Id)
+        
+        // To Do
+        // exclude 0 quanitty products
+        products = await _productService.GetAllProductsByGameZoneId(4);
     }
 }
+ 

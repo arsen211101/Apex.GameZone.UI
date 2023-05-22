@@ -8,7 +8,7 @@ public interface ICheckService
     Task<CheckoutModel> GetCheckoutById(int? id);
     Task<CheckoutModel> GetCheckoutBySectionId(int? sectionId);
     Task<int> CreateCheckout(CheckoutModel check);
-
     Task UpdateCheckout(CheckoutModel model);
     Task DeleteCheckout(CheckoutModel model);
+    Task<int> AddProductToCheck(ProductCheckoutModel productCheckout);
 }
